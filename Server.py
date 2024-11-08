@@ -222,5 +222,85 @@ def start():
         print("[WAITING] waiting for any request...")
 
 
+# -----------------------------------------------------------------
+# todo: implement a request handler method that split requests and call the functions
+def request_handler(request):
+    request_parts: List[str] = request.split(" ")
+    command = request_parts[0].lower()
+
+    if len(request_parts) >= 2:
+
+        # Get------------------------------------------------------
+        if command == "Get".lower():
+            # todo: همه جوانب را در نظر بگیر و exception handling کن
+            return handle_get_request(request)
+
+        # Post-----------------------------------------------------
+
+        elif command == "Post".lower():
+            # todo: همه جوانب را در نظر بگیر و exception handling کن
+            return handle_post_request(request)
+
+        # Ping-----------------------------------------------------
+
+        elif command == "Ping".lower():
+            # todo: همه جوانب را در نظر بگیر و exception handling کن
+            ip_address = request_parts[1]
+            if len(request_parts) == 4:
+                time_out = request_parts[2] or 2
+                count = request_parts[3] or 5
+            else:
+                time_out = 2
+                count = 5
+            if validate_ip_address(ip_address) or validate_domain(ip_address):
+                response = ICMP.verbose_ping(ip_address, int(time_out), int(count))
+                return json.dumps(response)
+            else:
+                response = json.dumps("HTTP/1.1 404 Not Found\nUser not found")
+                return response
+
+        # Check Ports----------------------------------------------
+        elif command == "Check".lower():
+            # todo: همه جوانب را در نظر بگیر و exception handling کن
+            ip_address = request_parts[1]
+            start_port = request_parts[2]
+            end_port = request_parts[3]
+            if validate_ip_address(ip_address):
+                response = validate_ports(start_port, end_port)
+
+                if response == "Ok":
+                    response = check_ports(ip_address, int(start_port), int(end_port))
+                    return json.dumps(response)
+                else:
+                    return json.dumps(response)
+
+            else:
+                response = json.dumps("HTTP/1.1 404 Not Found\nUser not found")
+                return response
+        # Ports Latency--------------------------------------------
+        elif command == "Latency".lower():
+            if len(request_parts) == 4:
+                ip_address = request_parts[1]
+                port = int(request_parts[2])
+                num = int(request_parts[3])
+
+                response = TCP_Latency.measure_tcp_latency(ip_address, port, num)
+                return json.dumps(response)
+
+        # Help and Disconnect--------------------------------------
+
+    elif len(request_parts) == 1:
+        if command == "Help".lower():
+            return help_request()
+        if command == DISCONNECT_MESSAGE.lower():
+            response = "Disconnecting..."
+            return response
+    # Invalid request----------------------------------------------
+
+    else:
+        response = json.dumps("HTTP/1.1 400 Bad Request\nInvalid request format.")
+        return response
+
+
 print("[STARTING] Server is starting...")
 start()
