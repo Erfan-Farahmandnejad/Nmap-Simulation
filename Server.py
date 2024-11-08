@@ -88,6 +88,88 @@ def check_ports(ip, start_port, end_port, timeout=3):
     return response
 
 
+# ----show service-------------------------------------------------
+def show_service(port, protocol='tcp'):
+    try:
+        service_name = socket.getservbyport(port, protocol)
+        return f"Service name: {service_name}"
+    except OSError:
+        return "Unknown service"
+
+
+# Get--------------------------------------------------------------
+
+def handle_get_request(request):
+    request_parts = request.split()
+    if len(request_parts) >= 2:
+        user_id = request_parts[1]
+        if f'user{user_id}' in USERS.keys():
+            user_info = USERS[f'user{user_id}']
+            response = f"HTTP/1.1 200 OK\nContent-Type: application/json\n\n{json.dumps(user_info)}"
+        else:
+            response = "HTTP/1.1 404 Not Found\nUser not found"
+    else:
+        response = "HTTP/1.1 400 Bad Request\nInvalid request format."
+    return response
+
+
+# Post-------------------------------------------------------------
+def handle_post_request(request):
+    command = request.split()
+    if len(command) >= 3:
+        name = command[1]
+        age = command[2]
+        if age.isdigit():
+            new_user_id = f'user{len(USERS) + 1}'
+            USERS[new_user_id] = {'name': name, 'age': int(age)}
+            response = "HTTP/1.1 200 OK\nUser data updated"
+        else:
+            response = "HTTP/1.1 400 Bad Request\nInvalid age format."
+    else:
+        response = "HTTP/1.1 400 Bad Request\nInvalid request format."
+    return response
+
+
+# Help-------------------------------------------------------------
+
+def help_request():
+    help_text = """
+    Here are the available commands:
+
+    1. **Get User Information**
+       Format: Get <user_id>
+       Example: Get 1
+       Description: Retrieves information of the user with the specified user_id.
+
+    2. **Post User Data**
+       Format: Post <name> <age>
+       Example: Post John 28
+       Description: Adds a new user with the specified name and age.
+
+    3. **Ping IP Address**
+       Format: Ping <ip_address> <timeout> <count>
+       Example: Ping 192.168.1.1 2 5
+       Description: Pings the IP address with optional timeout and count.
+
+    4. **Check Port Range**
+       Format: Check <ip_address> <start_port> <end_port>
+       Example: Check 192.168.1.1 80 100
+       Description: Checks the status of ports in the specified range on the IP.
+
+    5. **Measure Latency**
+       Format: Latency <ip_address> <port> <num_requests>
+       Example: Latency 192.168.1.1 80 10
+       Description: Measures the TCP latency to a specific IP and port.
+
+    6. **Disconnect**
+       Format: DISCONNECT
+       Description: Disconnects from the server.
+
+    Type 'Help' to view this information again at any time.
+    """
+    return help_text
+
+
 # function for handle communication between clients----------------
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
