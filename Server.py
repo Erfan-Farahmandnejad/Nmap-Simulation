@@ -40,12 +40,55 @@ def validate_ports(start_port, end_port):
     return "Ok"
 
 
-# for validate the Domain--------------------------------------
+# for validate the Domain------------------------------------------
 def validate_domain(domain):
     return bool(re.match(DOMAIN_REGEX, domain))
 
 
-# ----------------------------------------------------------------
+# check ports status-----------------------------------------------
+
+def check_ports(ip, start_port, end_port, timeout=3):
+    results = {}
+    temp = ''
+    ip_status = ICMP.verbose_ping(ip, 2, 1)
+    if ip_status.__contains__("Offline"):
+        ip_status = "Offline"
+    else:
+        ip_status = "Online"
+
+    try:
+        # Attempt to resolve hostname, default to IP if fails------
+        hostname = socket.gethostbyaddr(ip)[0]
+    except (socket.herror, socket.gaierror):
+        hostname = ip
+        # check status of all ports in range-----------------------
+    for port in range(start_port, end_port + 1):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        try:
+            sock.connect((ip, port))
+
+            results[
+                port] = f"-- Port: {port}    -- Status: Open    -- Service: {show_service(port)}    -- Hostname: {hostname}"
+            temp += f"-- Port: {port}    -- Status: Open    -- Service: {show_service(port)}    -- Hostname: {hostname}\n"
+
+        except (socket.timeout, ConnectionRefusedError):
+            # Mark as closed if connection fails-------------------
+            results[
+                port] = f"-- Port: {port}    -- Status: Closed    -- Service: {show_service(port)}    -- Hostname: {hostname}"
+            temp += f"-- Port: {port}    -- Status: Closed    -- Service:  {show_service(port)}   -- Hostname: {hostname}\n"
+        except Exception as e:
+            # Handle unexpected errors-----------------------------
+            results[
+                port] = f"-- Port: {port}    -- Status: Error: {e}    -- Service: {show_service(port)}    -- Hostname: {hostname}"
+            temp += f"-- Port: {port}    -- Status: Error: {e}    -- Service: {show_service(port)}    -- Hostname: {hostname}\n"
+
+    # Add IP status------------------------------------------------
+    response = f"{ip} is {ip_status}\n" + temp
+    return response
+
+
+# function for handle communication between clients----------------
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
     # Send welcome message and help instructions
@@ -84,7 +127,7 @@ def handle_client(conn, addr):
     print(f"[DISCONNECTED] {addr} disconnected.")
 
 
-# ----------------------------------------------------------------
+# -----------------------------------------------------------------
 
 def start():
     server.listen()
