@@ -2,6 +2,8 @@ import socket
 import threading
 import re
 from typing import List
+import ICMP
+import TCP_Latency
 import json
 
 HEADER = 128
