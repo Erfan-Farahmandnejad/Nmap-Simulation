@@ -3,8 +3,6 @@
 ## 🌟 Overview
 This project is a **Python-based Nmap-Simulation** that mimics the functionality of **Nmap**, allowing users to perform **network scanning, real-time messaging, and diagnostics**. The system includes a **central server** managing multiple clients, supports **TCP/IP communication**, and provides **ICMP functionalities** for analyzing network performance.
 
-This tool is useful for **network engineers**, **security researchers**, and **developers** working on **penetration testing**, **network troubleshooting**, or **latency measurement**.
-
 ---
 
 ## 🚀 Features
