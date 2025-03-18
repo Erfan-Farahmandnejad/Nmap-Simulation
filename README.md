@@ -35,7 +35,7 @@ Ensure you have **Python 3.x** installed.
 
 ### **2️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/Erfan-fn/Nmap-Simulation.git
+git clone https://github.com/Erfan-Farahmandnejad/Nmap-Simulation.git
 cd Nmap-Simulation
 ```
 
