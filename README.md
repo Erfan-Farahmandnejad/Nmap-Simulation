@@ -1,17 +1,17 @@
-# Nmap-Simulation: Network Scanning & Diagnostics Tool ⚡
+# Nmap-Simulation: Network Scanning & Diagnostics Tool
 
-## 🌟 Overview
+## Overview
 This project is a **Python-based Nmap-Simulation** that mimics the functionality of **Nmap**, allowing users to perform **network scanning, real-time messaging, and diagnostics**. The system includes a **central server** managing multiple clients, supports **TCP/IP communication**, and provides **ICMP functionalities** for analyzing network performance.
 
 ---
 
-## 🚀 Features
-✅ **Network Scanning**: Simulates Nmap by scanning open ports and detecting active hosts 📡.  
-✅ **Client-Server Communication**: Enables clients to connect to a server for exchanging messages 🔄.  
-✅ **Multi-Client Handling**: Supports multiple simultaneous client connections ⚡.  
-✅ **ICMP Support**: Provides network diagnostics and latency checks using ICMP 📶.  
-✅ **TCP Latency Measurement**: Measures response times of network devices ⏳.  
-✅ **Real-Time Data Transfer**: Facilitates instant communication and packet analysis 💬.  
+## Features
+✅ **Network Scanning**: Simulates Nmap by scanning open ports and detecting active hosts.  
+✅ **Client-Server Communication**: Enables clients to connect to a server for exchanging messages.  
+✅ **Multi-Client Handling**: Supports multiple simultaneous client connections.  
+✅ **ICMP Support**: Provides network diagnostics and latency checks using ICMP.  
+✅ **TCP Latency Measurement**: Measures response times of network devices.  
+✅ **Real-Time Data Transfer**: Facilitates instant communication and packet analysis.  
 
 
 ---
